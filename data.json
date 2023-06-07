@@ -1,0 +1,98 @@
+{
+  "users": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    },
+    {
+      "email": "dhirajraut27@outlook.com",
+      "password": "pass",
+      "confirmPassword": "pass",
+      "id": 3
+    },
+    {
+      "email": "dhirajraut27@outlook.com",
+      "password": "pass",
+      "confirmPassword": "pass",
+      "id": 4
+    },
+    {
+      "email": "drazraut272@dsks.com",
+      "password": "pass",
+      "confirmPassword": "pass",
+      "id": 5
+    },
+    {
+      "email": "yakace8264@reimondo.com",
+      "password": "asd",
+      "confirmPassword": "asd",
+      "id": 6
+    },
+    {
+      "email": "drazraut27",
+      "password": "RX@n@u@m8bWT3Mv",
+      "confirmPassword": "asd",
+      "id": 7
+    },
+    {
+      "email": "drazraut27",
+      "password": "RX@n@u@m8bWT3Mv",
+      "confirmPassword": "asd",
+      "id": 8
+    },
+    {
+      "email": "drazraut@gmail.com",
+      "password": "asd",
+      "confirmPassword": "asd",
+      "id": 9
+    },
+    {
+      "email": "dhirajraut27@outlook.com",
+      "password": "asd",
+      "confirmPassword": "asd",
+      "id": 10
+    },
+    {
+      "fname": "Hari",
+      "lname": "Bahadur",
+      "email": "hari@email.com",
+      "password": "asd",
+      "confirmPassword": "asd",
+      "id": 11
+    },
+    {
+      "fname": "Hari",
+      "lname": "Bahadur",
+      "email": "haha@as.com",
+      "password": "asd",
+      "confirmPassword": "asd",
+      "id": 12
+    },
+    {
+      "fname": "Hari",
+      "lname": "Shyam",
+      "email": "shay@email.com",
+      "password": "asd123",
+      "confirmPassword": "asd123",
+      "id": 13
+    },
+    {
+      "fname": "",
+      "lname": "",
+      "email": "",
+      "password": "",
+      "confirmPassword": "",
+      "id": 14
+    },
+    {
+      "fname": "Hari",
+      "lname": "Bahadur",
+      "email": "sad@sada.com",
+      "password": "asd",
+      "confirmPassword": "asd",
+      "id": 15
+    }
+  ]
+}
