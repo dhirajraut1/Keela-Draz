@@ -1,21 +1,20 @@
 import { Meteor } from 'meteor/meteor'
-import { Accounts } from 'meteor/accounts-base'
-import { LinksCollection } from '/imports/api/links'
+import { Contacts } from '../imports/api/ContactsCollection'
+import ContactMethods from '../imports/api/ContactMethods'
+import { Tags } from '../imports/api/TagsCollection'
 
-const SEED_USERNAME = 'meteorite';
-const SEED_PASSWORD = 'password';
-
-async function insertLink({ title, url }) {
-  await LinksCollection.insertAsync({ title, url, createdAt: new Date() })
-}
+const insertTag = tagText => Tags.insert({ text: tagText })
 
 
-
-Meteor.startup(async () => {
-  if (!Accounts.findUserByUsername(SEED_USERNAME)) {
-    Accounts.createUser({
-      username: SEED_USERNAME,
-      password: SEED_PASSWORD,
-    });
+Meteor.startup( () => {
+if (Tags.find().count() === 0) {
+    [
+      'Tag1',
+      'Tag2',
+    ].forEach(insertTag)
   }
 })
+
+Meteor.publish('contacts', function() {
+  return Contacts.find();
+});

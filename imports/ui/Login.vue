@@ -1,6 +1,7 @@
 <template>
     <section class="bg-gray-50 dark:bg-gray-900">
-        <div id="toast-success" class="fixed flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg shadow top-5 right-5 dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800" role="alert">
+        <!-- toast -->
+        <!-- <div id="toast-success" class="fixed flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg shadow top-5 right-5 dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800" role="alert">
             <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
             <span class="sr-only">Check icon</span>
@@ -10,7 +11,7 @@
             <span class="sr-only">Close</span>
             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
             </button>
-        </div>
+        </div> -->
       <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
               <img class="w-auto h-auto mr-2" src="https://www.keela.co/wp-content/uploads/logo.png" alt="logo">
@@ -20,7 +21,7 @@
                   <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                       Login to Keela
                   </h1>
-                  <form class="space-y-4 md:space-y-6" @submit.prevent="handleSubmit">
+                  <form class="space-y-4 md:space-y-6" @submit.prevent="login">
                       <div>
                           <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
                           <input type="email" name="email" id="email"  v-model="email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required="">
@@ -29,7 +30,7 @@
                           <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
                           <input type="password" name="password" id="password"  v-model="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
                       </div>
-                      <button v-on:click="login" class=" w-full text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800">Login</button>
+                      <button class=" w-full text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800">Login</button>
                       <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                           Don't have an account? <router-link to = "/signup" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Signup here </router-link>
                       </p>
@@ -41,8 +42,6 @@
     </template>
     <script>
     import { Meteor } from 'meteor/meteor';
-    import axios from 'axios';
-
         export default {
             name: "LoginForm",
             data(){
@@ -52,28 +51,15 @@
                 }
             },
             methods:{
-                handleSubmit(event){
-                    // e.preventDefault();
-                    Meteor.loginWithPassword(this.email, this.password);
+                login() {
+                    Meteor.loginWithPassword(this.email, this.password, (error) => {
+                        if (error) {
+                        console.log(error.reason);  
+                        } else {
+                        this.$router.push({name:'home'});
+                        }
+                    });
                 },
-                async login(){
-                    let result = await axios.get(
-                        `http://localhost:4000/users?email=${this.email}$password=${this.password}`
-                    );
-                    if(result.status==200 && result.data.length > 0){
-                    localStorage.setItem("user-info", JSON.stringify(result.data[0]))
-                    this.$router.push({name:'home'})
-                    } else {
-                        alert("Incorrect Username or Password!")
-                    }
-
-                }
             },
-            mounted(){
-            let user = localStorage.getItem('user-info');
-            if (user){
-                this.$router.push({name:'home'})
-            }
-        }
         }
     </script>

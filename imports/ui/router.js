@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from './Home.vue'
+import AsideMenu from './AsideMenu.vue'
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -7,7 +8,11 @@ export const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: Home,
+      components: {
+        default: Home,
+        asideMenu: AsideMenu,
+      },
+      meta : { requiresAuth: true}
     },
     {
       path: '/about',
@@ -18,6 +23,9 @@ export const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: () => import('./Signup.vue'),
+      meta: {
+        requiresAuth: false
+      }
     },
     {
       path: '/login',
@@ -26,3 +34,16 @@ export const router = createRouter({
     },
   ],
 })
+
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth &&!Meteor.userId()) {
+    next('/login');
+  } else if (to.path === '/login' && Meteor.userId()) {
+    next('/');
+  } else if (to.path === '/signup' && Meteor.userId()) {
+    next('/login');
+  } else {
+    next();
+  }
+});

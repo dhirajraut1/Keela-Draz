@@ -1,8 +1,7 @@
-<script setup>
+<script>
 import { Meteor } from 'meteor/meteor'
 import { Tracker } from 'meteor/tracker'
 
-import AppMenu from './AppMenu.vue'
 import { createHydrationRenderer, onMounted } from 'vue'
 import { initFlowbite } from 'flowbite'
 
@@ -11,11 +10,26 @@ onMounted(() => {
     initFlowbite();
 })
 
+export default {
+  data() {
+    return {
+      user: null,
+    }
+  },
+  created() {
+    Tracker.autorun(()=>{
+      this.user = Meteor.user();
+      console.log(this.user);
+    }) 
+  },
+}
 </script>
 
 <template>
   <div class="w-full">
-    <!-- <AppMenu /> -->
     <router-view />
+    <router-view name="asideMenu" />
+
+
   </div>
 </template>
