@@ -8,7 +8,6 @@ export default {
     methods: {
         logout() {
             Meteor.logout();
-            // console.log("Logout clicked");
             this.$router.push({ name: "login" });
         },
     },
