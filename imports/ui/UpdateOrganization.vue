@@ -16,66 +16,101 @@
             </button>
             <div class="px-6 py-6 lg:px-8">
                 <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-                    Add an Organization
+                    Update Organization
                 </h3>
-                <form class="space-y-6" @submit.prevent="submitOrg">
+                <form class="space-y-6" @submit.prevent="updateOrg">
                     <div>
-                        <label for="org-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Organization
+                        <label for="org-name"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Organization
                             Name</label>
-                        <input type="text" name="text" id="org-name" v-model="orgName"
+                        <input type="text" name="text" id="org-name" v-model="name"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                            placeholder="Help the Needy" required />
+                            required />
                     </div>
                     <div>
                         <label for="org-email"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Organization's Email</label>
-                        <input type="email" name="email" id="org-email" v-model="orgEmail" placeholder="help@theneedy.com"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Organization's
+                            Email</label>
+                        <input type="email" name="email" id="org-email" v-model="email"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                             required />
                     </div>
                     <div>
                         <label for="org-phone"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone</label>
-                        <input type="text" name="phone" id="org-phone" v-model="orgPhone" placeholder="+1 768-2712-212 "
+                        <input type="text" name="phone" id="org-phone" v-model="phone"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                             required />
                     </div>
+                    {{ orgData }}ooo
                     <!-- <div class="flex justify-between"></div> -->
                     <button
                         class="w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        Create
+                        Update
                     </button>
                 </form>
             </div>
         </div>
+        <p>{{ organizations.name }}</p>
     </div>
 </template>
 
 <script>
+import { reactive } from 'vue';
+import { Meteor } from 'meteor/meteor';
+import { subscribe } from 'vue-meteor-tracker';
+
 export default {
-    name: "addOrganization",
+
+    name: "updateOrganization",
+
+    setup() {
+    const organizations = reactive({ name: '' });
+
+    subscribe('organizations', (data) => {
+      organizations.name = data.organizationName;
+    });
+
+    return {
+      organizations,
+    };
+  },
+    // props: ['organization'],
     data() {
         return {
-            orgName: "",
-            orgEmail: "",
-            orgPhone: "",
+            subscribedOrg: {},
+            email: '',
+            name: '',
+            phone: 'www'
         };
     },
     methods: {
-        submitOrg() {
-            const userId = Meteor.userId();
+
+        // subscribeOrg(id) {
+        //     // Meteor.subscribe('organizations', (data) =>{
+        //     //     this.orgData = data
+        //     // })
+        //     Meteor.subscribe('organizations', (orgs) => {
+        //         for (const org of orgs) {
+        //             if (org._id === id) {
+        //                 this.subscribedOrg = org;
+        //             }
+        //         }
+        //     });
+        // },
+        updateOrg() {
             const organization = {
-                organizationName: this.orgName,
-                organizationEmail: this.orgEmail,
-                organizationPhone: this.orgPhone,
+                organizationName: this.organization.name,
+                organizationEmail: this.organization.email,
+                organizationPhone: this.organization.phone,
             };
             console.log(organization);
-            Meteor.call("insertOrganization", organization, (error, result) => {
+            Meteor.call("updateOrganization", organization, (error, result) => {
                 if (error) {
                     console.log(error);
                 }
                 else {
-                    console.log("Organization created successfully");
+                    console.log("Organization updated successfully");
                     this.orgName = "";
                     this.orgEmail = "";
                     this.orgPhone = "";
@@ -83,5 +118,19 @@ export default {
             });
         },
     },
+    mounted() {
+        this.subscribeOrg()
+    }
+    // meteor: {
+    //     $subscribe: {
+    //         organizations: []
+    //     },
+    //     showSelectedOrganization() {
+    //         const userId = Meteor.userId();
+    //         if (userId) {
+    //             return Organizations.find({"_id":organization._id}).fetch();
+    //         }
+    //     }
+    // },
 };
 </script>

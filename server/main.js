@@ -7,9 +7,6 @@ import { Tags } from '../imports/api/TagsCollection'
 import { Organizations } from '../imports/api/OrganizationsCollection'
 import OrganizationMethods from '../imports/api/OrganizationMethods'
 
-const insertTag = tagText => Tags.insert({ text: tagText })
-
-
 Meteor.startup( () => {
 
 })
