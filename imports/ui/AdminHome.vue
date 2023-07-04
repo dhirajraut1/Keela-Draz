@@ -1,52 +1,49 @@
 <script>
-import AsideMenu from './AsideMenu.vue';
-import { Organizations } from "../api/OrganizationsCollection"
-import AddOrganization from './AddOrganization.vue';
-import UpdateOrganization from './UpdateOrganization.vue';
+import ContactList from './ContactList.vue';
+import TagList from './TagList.vue'
+import OrganizationList from './OrganizationList.vue'
 
 export default {
     name: "adminHome",
-    // data (){
-    //     return {
-    //         selectedorgId: showOrganizations()._id,
-    //     }
-    // },
+    data() {
+    return {
+      tab: 'OrganizationList'
+    };
+  },
     methods: {
         logout() {
             Meteor.logout();
+            window.location.reload();
             this.$router.push({ name: "login" });
         },
-        deleteOrganization(organizationId) {
-            console.log(organizationId)
-            Meteor.call('deleteOrganization', organizationId, function (error, result) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log(result);
-                    // Reload the page to update the table
-                    location.reload();
-                }
-            });
-        }
+        // updateOrganization(organizationId) {
+        //     Meteor.call('updateOrganization', organizationId, this.name, this.email, this.phone, (error, result) => {
+        //         if (error) {
+        //             console.log(error);
+        //         } else {
+        //             console.log(result);
+        //         }
+        //     });
+        // },
     },
-    meteor: {
-        $subscribe: {
-            organizations: []
-        },
-        showOrganizations() {
-            const userId = Meteor.userId();
-            if (userId) {
-                return Organizations.find({}).fetch();
-            }
-        }
+    // meteor: {
+    //     $subscribe: {
+    //         organizations: []
+    //     },
+    //     showOrganizations() {
+    //         const userId = Meteor.userId();
+    //         if (userId) {
+    //             return Organizations.find({}).fetch();
+    //         }
+    //     },
     //     showSelectedOrganizations(id) {
     //         const userId = Meteor.userId();
     //         if (id) {
-    //             return Organizations.find({"_id":id}).fetch();
+    //             return Organizations.find({ "_id": id }).fetch();
     //         }
     //     }
-    },
-    components: { AddOrganization, UpdateOrganization },
+    // },
+    components: { ContactList, TagList, OrganizationList},
     // mounted () {
     //     this.showOrganizations()
     // }
@@ -72,13 +69,60 @@ export default {
         </div>
     </nav>
 
-    <AsideMenu />
+    <aside id="logo-sidebar"
+        class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+        aria-label="Sidebar">
+        <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+            <ul class="space-y-2 font-medium">
+                <li>
+                    <a @click="tab = 'OrganizationList'"
+                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd"
+                                d="M1 2.75A.75.75 0 011.75 2h10.5a.75.75 0 010 1.5H12v13.75a.75.75 0 01-.75.75h-1.5a.75.75 0 01-.75-.75v-2.5a.75.75 0 00-.75-.75h-2.5a.75.75 0 00-.75.75v2.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5H2v-13h-.25A.75.75 0 011 2.75zM4 5.5a.5.5 0 01.5-.5h1a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-1a.5.5 0 01-.5-.5v-1zM4.5 9a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h1a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-1zM8 5.5a.5.5 0 01.5-.5h1a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-1a.5.5 0 01-.5-.5v-1zM8.5 9a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h1a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-1zM14.25 6a.75.75 0 00-.75.75V17a1 1 0 001 1h3.75a.75.75 0 000-1.5H18v-9h.25a.75.75 0 000-1.5h-4zm.5 3.5a.5.5 0 01.5-.5h1a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-1a.5.5 0 01-.5-.5v-1zm.5 3.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h1a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-1z"
+                                clip-rule="evenodd" />
+                        </svg>
 
+                        <span class="flex-1 ml-3 whitespace-nowrap">Organizations</span>
+                    </a>
+
+                </li>
+                <li>
+                    <a @click="tab = 'ContactList'"
+                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                            <path
+                                d="M7 8a3 3 0 100-6 3 3 0 000 6zM14.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM1.615 16.428a1.224 1.224 0 01-.569-1.175 6.002 6.002 0 0111.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 017 18a9.953 9.953 0 01-5.385-1.572zM14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 00-1.588-3.755 4.502 4.502 0 015.874 2.636.818.818 0 01-.36.98A7.465 7.465 0 0114.5 16z" />
+                        </svg>
+
+                        <span class="ml-3">Contacts</span>
+                    </a>
+                </li>
+                <li>
+                    <a @click="tab = 'TagList'"
+                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd"
+                                d="M5.5 3A2.5 2.5 0 003 5.5v2.879a2.5 2.5 0 00.732 1.767l6.5 6.5a2.5 2.5 0 003.536 0l2.878-2.878a2.5 2.5 0 000-3.536l-6.5-6.5A2.5 2.5 0 008.38 3H5.5zM6 7a1 1 0 100-2 1 1 0 000 2z"
+                                clip-rule="evenodd" />
+                        </svg>
+
+
+                        <span class="flex-1 ml-3 whitespace-nowrap">Tags</span>
+                    </a>
+
+                </li>
+               
+            </ul>
+        </div>
+    </aside>
     <div class="mt-16 sm:ml-64">
-        <section class="h-full bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
+        <section class="h-full p-3 sm:p-5">
             <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
-                <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-                    <div
+                <component :is="tab" />
+
+                <!-- <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden"> -->
+                    <!-- <div
                         class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                         <div class="w-full md:w-1/2">
                             <form class="flex items-center">
@@ -110,8 +154,8 @@ export default {
                             </div>
 
                         </div>
-                    </div>
-                    <div>
+                    </div> -->
+                    <!-- <div>
                         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
@@ -132,19 +176,72 @@ export default {
                                     <td class="px-4 py-3">{{ organization.organizationPhone }}</td>
                                     <td class="px-4 py-3 flex items-center justify-end">
                                         <button type="button" data-modal-target="edit-modal" data-modal-toggle="edit-modal"
-                                           
                                             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Edit</button>
-                                        <div id="edit-modal" tabindex="-1" aria-hidden="true"
-                                            class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                                            <UpdateOrganization/>
-                                        </div>
                                         <button type="button" v-on:click="deleteOrganization(organization._id)"
                                             class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div> -->
+
+
+                    <!-- update org modal  -->
+                    <div id="edit-modal" tabindex="-1" aria-hidden="true"
+                        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                        <!-- Main modal -->
+                        <div class="relative w-full max-w-md max-h-full">
+                            <!-- Add Org Modal -->
+                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                <button type="button"
+                                    class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                                    data-modal-hide="edit-modal">
+                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span class="sr-only">Close modal</span>
+                                </button>
+                                <div class="px-6 py-6 lg:px-8">
+                                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                                        Update Organization
+                                    </h3>
+                                    <form class="space-y-6" @submit.prevent="updateOrganization">
+                                        <div>
+                                            <label for="org-name"
+                                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Organization
+                                                Name</label>
+                                            <input type="text" name="text" id="org-name" v-model="name"
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                                required />
+                                        </div>
+                                        <div>
+                                            <label for="org-email"
+                                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Organization's
+                                                Email</label>
+                                            <input type="email" name="email" id="org-email" v-model="email"
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                                required />
+                                        </div>
+                                        <div>
+                                            <label for="org-phone"
+                                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone</label>
+                                            <input type="text" name="phone" id="org-phone" v-model="phone"
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                                required />
+                                        </div>
+                                        <button
+                                            class="w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                            Update
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                     <!-- <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
                         aria-label="Table navigation">
                         <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -200,9 +297,8 @@ export default {
                             </li>
                         </ul>
                     </nav> -->
-                </div>
+                <!-- </div> -->
             </div>
-            {{ showOrganizations._id }}
         </section>
     </div>
 </template>

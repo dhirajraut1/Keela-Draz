@@ -17,5 +17,19 @@ Meteor.methods({
     Organizations.remove(organizationId);
 
     return 'Organization deleted successfully';
-  }
+  },
+  updateOrganization(id, name, email, phone) {
+    const organization = Organizations.findOne(id);
+    if (!organization) {
+      throw new Meteor.Error('not-found', 'Organization not found');
+    }
+    Organizations.update(id, {
+      $set: {
+        organizationName: name,
+        organizationEmail: email,
+        organizationPhone: phone,
+      },
+    });
+    return 'Organization updated successfully';
+  },
 });

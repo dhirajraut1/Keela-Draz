@@ -1,13 +1,17 @@
 <script>
-import AsideMenu from './AsideMenu.vue';
-import { Contacts } from "../api/ContactsCollection"
-import AddContact from './AddContact.vue';
+// import AsideMenu from './AsideMenu.vue';
+// import AddContact from './AddContact.vue';
+// import { Contacts } from "../api/ContactsCollection"
+import ContactList from './ContactList.vue';
+import TagList from './TagList.vue'
+import OrganizationList from './OrganizationList.vue'
 
 export default {
     name: "home",
     data() {
         return {
             user: null,
+            tab: 'ContactList'
         }
     },
     created() {
@@ -25,26 +29,28 @@ export default {
         },
         logout() {
             Meteor.logout();
+            window.location.reload();
             this.$router.push({ name: "login" });
+
         },
     },
-    meteor: {
-        $subscribe: {
-            contacts: []
-        },
-        showContacts() {
-            const userId = Meteor.userId();
-            if (userId) {
-                return Contacts.find({ createdByUserId: userId }).fetch();
-            }
-        }
-    },
-    components: { AddContact }
+    // meteor: {
+    //     $subscribe: {
+    //         contacts: []
+    //     },
+    //     showContacts() {
+    //         const userId = Meteor.userId();
+    //         if (userId) {
+    //             return Contacts.find({ createdByUserId: userId }).fetch();
+    //         }
+    //     }
+    // },
+    components: { ContactList, TagList, OrganizationList }
 }
 </script>
 
 <template>
-    <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+    <nav class="fixed top-0 z-50 w-full bg-purple-100 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div class="px-3 py-3 lg:px-5 lg:pl-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center justify-start">
@@ -54,21 +60,67 @@ export default {
                 </div>
                 <div class="flex items-center justify-end">
                     <div class=" p-2">
-                    Welcome, <span class="font-semibold">
-                        {{ user.fname }} {{ user.lname }}
-                    </span>
+                        Welcome, <span class="font-semibold">
+                            {{ user.fname }} {{ user.lname }}
+                        </span>
                     </div>
                     <button
-                        class="w-full text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800"
+                        class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800"
                         v-on:click="logout"> Logout</button>
                 </div>
             </div>
         </div>
     </nav>
+    <aside id="logo-sidebar"
+        class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+        aria-label="Sidebar">
+        <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+            <ul class="space-y-2 font-medium">
+                <li>
+                    <a @click="tab = 'ContactList'"
+                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                            <path
+                                d="M7 8a3 3 0 100-6 3 3 0 000 6zM14.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM1.615 16.428a1.224 1.224 0 01-.569-1.175 6.002 6.002 0 0111.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 017 18a9.953 9.953 0 01-5.385-1.572zM14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 00-1.588-3.755 4.502 4.502 0 015.874 2.636.818.818 0 01-.36.98A7.465 7.465 0 0114.5 16z" />
+                        </svg>
 
-    <AsideMenu />
+                        <span class="ml-3">Contacts</span>
+                    </a>
+                </li>
+                <li>
+                    <a @click="tab = 'TagList'"
+                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd"
+                                d="M5.5 3A2.5 2.5 0 003 5.5v2.879a2.5 2.5 0 00.732 1.767l6.5 6.5a2.5 2.5 0 003.536 0l2.878-2.878a2.5 2.5 0 000-3.536l-6.5-6.5A2.5 2.5 0 008.38 3H5.5zM6 7a1 1 0 100-2 1 1 0 000 2z"
+                                clip-rule="evenodd" />
+                        </svg>
 
+
+                        <span class="flex-1 ml-3 whitespace-nowrap">Tags</span>
+                    </a>
+
+                </li>
+                <!-- <li>
+            <router-link class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700" to="/tags">
+               <svg aria-hidden="true" class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l2-2a1 1 0 00-1.414-1.414L11 7.586V3a1 1 0 10-2 0v4.586l-.293-.293z"></path><path d="M3 5a2 2 0 012-2h1a1 1 0 010 2H5v7h2l1 2h4l1-2h2V5h-1a1 1 0 110-2h1a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"></path></svg>
+               <span class="flex-1 ml-3 whitespace-nowrap">Tags</span>
+               </router-link>
+         </li> -->
+            </ul>
+        </div>
+    </aside>
     <div class="mt-16 sm:ml-64">
+        <section class="h-full p-3 sm:p-5">
+            <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
+                <component :is="tab" />
+            </div>
+        </section>
+    </div>
+    <!-- <AsideMenu /> -->
+    <!-- <ContactList /> -->
+
+    <!-- <div class="mt-16 sm:ml-64">
         <section class="h-full bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
             <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                 <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
@@ -218,5 +270,4 @@ export default {
                 </div>
             </div>
         </section>
-    </div>
-</template>
+    </div> --></template>

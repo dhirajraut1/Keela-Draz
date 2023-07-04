@@ -26,9 +26,9 @@ export default {
 </script>
 
 <template>
-  <div class="w-full">
+  <div>
     <router-view />
-    <router-view name="asideMenu" />
+    <!-- <router-view name="asideMenu" /> -->
 
 
   </div>

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from './Home.vue'
 import AdminHome from './AdminHome.vue'
-import AsideMenu from './AsideMenu.vue'
+// import AsideMenu from './AsideMenu.vue'
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -11,7 +11,7 @@ export const router = createRouter({
       name: 'home',
       components: {
         default: Home,
-        asideMenu: AsideMenu,
+        // asideMenu: AsideMenu,
       },
       meta: { requiresAuth: true }
     },
@@ -34,12 +34,17 @@ export const router = createRouter({
       component: () => import('./Unauthorized.vue'),
     },
     {
+      path: '/:pathMatch(.*)*',
+      name: 'unauthorized',
+      component: () => import('./Unauthorized.vue'),
+  },
+    {
       path: '/admin',
       name: 'adminHome',
       // beforeEnter: checkIsAdmin,
       components: {
         default: AdminHome,
-        asideMenu: AsideMenu,
+        // asideMenu: AsideMenu,
       },
       meta: {
         requiresAuth: true,
