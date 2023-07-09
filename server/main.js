@@ -11,6 +11,9 @@ import TagMethods from '../imports/api/TagMethods'
 import { Organizations } from '../imports/api/OrganizationsCollection'
 import OrganizationMethods from '../imports/api/OrganizationMethods'
 
+import UserMethods from '../imports/api/UserMethods'
+
+
 Meteor.startup( () => {
 
 })

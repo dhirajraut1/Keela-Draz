@@ -1,54 +1,3 @@
-<script>
-// import AsideMenu from './AsideMenu.vue';
-// import AddContact from './AddContact.vue';
-// import { Contacts } from "../api/ContactsCollection"
-import ContactList from './ContactList.vue';
-import TagList from './TagList.vue'
-import OrganizationList from './OrganizationList.vue'
-
-export default {
-    name: "home",
-    data() {
-        return {
-            user: null,
-            tab: 'ContactList'
-        }
-    },
-    created() {
-        this.getUser();
-    },
-    methods: {
-        getUser() {
-            const user = Meteor.user();
-            if (user) {
-                this.user = {
-                    fname: user.profile.firstName,
-                    lname: user.profile.lastName,
-                };
-            }
-        },
-        logout() {
-            Meteor.logout();
-            window.location.reload();
-            this.$router.push({ name: "login" });
-
-        },
-    },
-    // meteor: {
-    //     $subscribe: {
-    //         contacts: []
-    //     },
-    //     showContacts() {
-    //         const userId = Meteor.userId();
-    //         if (userId) {
-    //             return Contacts.find({ createdByUserId: userId }).fetch();
-    //         }
-    //     }
-    // },
-    components: { ContactList, TagList, OrganizationList }
-}
-</script>
-
 <template>
     <nav class="fixed top-0 z-50 w-full bg-purple-100 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div class="px-3 py-3 lg:px-5 lg:pl-3">
@@ -57,6 +6,11 @@ export default {
                     <a href="/" class="flex ml-2 md:mr-24">
                         <img src="https://www.keela.co/wp-content/uploads/logo.png" class="h-8 mr-3" alt="keela Logo" />
                     </a>
+                </div>
+                <div class="flex items-center text-center">
+                    <b class="text-xl font-black uppercase">
+                        {{ user.org }}
+                    </b>
                 </div>
                 <div class="flex items-center justify-end">
                     <div class=" p-2">
@@ -71,7 +25,7 @@ export default {
             </div>
         </div>
     </nav>
-    <aside id="logo-sidebar"
+    <aside v-if="user.org" id="logo-sidebar"
         class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
         aria-label="Sidebar">
         <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
@@ -110,12 +64,22 @@ export default {
             </ul>
         </div>
     </aside>
-    <div class="mt-16 sm:ml-64">
+    <div v-if="user.org" class="mt-16 sm:ml-64">
         <section class="h-full p-3 sm:p-5">
-            <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
+            <!-- <div class="mx-auto max-w-screen-xl px-4 lg:px-12"> -->
+            <div class="mx-auto px-4 lg:px-12">
                 <component :is="tab" />
             </div>
         </section>
+    </div>
+
+    <div v-if="!user.org" class="h-full mt-20 justify-items-center mx-auto">
+        <img class="mx-auto w-1/4" src="welcome.svg" alt="">
+        <div class="px-6 py-4 font-semibold text-center">
+            <br>
+            <h1>Welcome to Keela.</h1> <br>
+            No Organization associated with your account. Please ask the Admin to associate one.
+        </div>
     </div>
     <!-- <AsideMenu /> -->
     <!-- <ContactList /> -->
@@ -270,4 +234,58 @@ export default {
                 </div>
             </div>
         </section>
-    </div> --></template>
+    </div> -->
+</template>
+
+<script>
+// import AsideMenu from './AsideMenu.vue';
+// import AddContact from './AddContact.vue';
+// import { Contacts } from "../api/ContactsCollection"
+import ContactList from './ContactList.vue';
+import TagList from './TagList.vue'
+import OrganizationList from './OrganizationList.vue'
+
+export default {
+    name: "home",
+    data() {
+        return {
+            user: null,
+            tab: 'TagList'
+        }
+    },
+    created() {
+        this.getUser();
+    },
+    methods: {
+        getUser() {
+            const user = Meteor.user();
+            if (user) {
+                this.user = {
+                    fname: user.profile.firstName,
+                    lname: user.profile.lastName,
+                    org: user.profile.organizationName,
+                };
+            }
+        },
+        logout() {
+            Meteor.logout();
+            window.location.reload();
+            this.$router.push({ name: "login" });
+
+        },
+    },
+    // meteor: {
+    //     $subscribe: {
+    //         contacts: []
+    //     },
+    //     showContacts() {
+    //         const userId = Meteor.userId();
+    //         if (userId) {
+    //             return Contacts.find({ createdByUserId: userId }).fetch();
+    //         }
+    //     }
+    // },
+
+    components: { ContactList, TagList, OrganizationList }
+}
+</script>

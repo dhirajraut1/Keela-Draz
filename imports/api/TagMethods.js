@@ -2,33 +2,33 @@ import { Meteor } from 'meteor/meteor'
 import { Tags } from './TagsCollection'
 
 Meteor.methods({
-    "insertTag"(tag) {
-        Tags.insert(tag);
-      },
-      deleteTag(tagId) {
-        // check(organizationId, String);
-    
-        const tag = Tags.findOne(tagId);
-        if (!tag) {
-          throw new Meteor.Error('not-found', 'Tag not found');
-        }
-    
-        Tags.remove(tagId);
-    
-        return 'Tag deleted successfully';
-      },
-      // updateOrganization(id, name, email, phone) {
-      //   const organization = Organizations.findOne(id);
-      //   if (!organization) {
-      //     throw new Meteor.Error('not-found', 'Organization not found');
-      //   }
-      //   Organizations.update(id, {
-      //     $set: {
-      //       organizationName: name,
-      //       organizationEmail: email,
-      //       organizationPhone: phone,
-      //     },
-      //   });
-      //   return 'Organization updated successfully';
-      // },
+  insertTag(tag) {
+    const userDetails = Meteor.user();
+    Tags.insert({
+      ...tag,
+      createdByUserId: userDetails._id,
+      organizationName: userDetails.profile.organizationName,
+      organizationId: userDetails.profile.organizationId
     });
+    console.log('Tag created successfully.')
+  },
+
+  deleteTag(tagId) {
+
+    const tag = Tags.findOne(tagId);
+    if (!tag) {
+      throw new Meteor.Error('not-found', 'Tag not found');
+    }
+    Tags.remove(tagId);
+    return 'Tag deleted successfully';
+  },
+
+  updateTag(tag) {
+    Tags.update(tag._id, {
+      $set: {
+        tagName: tag.tagName,
+        modifiedAt: new Date(),
+      },
+    });
+  },
+});

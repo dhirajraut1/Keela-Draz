@@ -28,9 +28,11 @@
                     class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
                     Add Contact
                 </button>
+                <div v-if="showModal" class="w-full md:w-auto flex flex-col md:flex-row items-center"></div>
+
                 <div v-if="showModal" id="contactModal" tabindex="-1" aria-hidden="true"
-                    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                    <div class="relative w-full max-w-md max-h-full">
+                    class="flex justify-center fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-auto overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                    <div class="relative p-4 mt-12 w-full max-w-md max-h-full">
                         <!-- Add Contact Modal -->
                         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                             <button type="button" @click="closeModal"
@@ -118,7 +120,7 @@
                     <th scope="col" class="px-4 py-3">Email</th>
                     <th scope="col" class="px-4 py-3">Phone</th>
                     <th scope="col" class="px-4 py-3">Company</th>
-                    <th scope="col" class="px-4 py-3">Priority</th>
+                    <th scope="col" class="px-4 py-3">Tags</th>
                     <th scope="col" class="px-4 py-3">Actions</th>
 
                 </tr>
@@ -131,14 +133,16 @@
                     <td class="px-4 py-3">{{ contact.email }}</td>
                     <td class="px-4 py-3">{{ contact.phone }}</td>
                     <td class="px-4 py-3">{{ contact.company }}</td>
-                    <td class="px-4 py-3">{{ contact.priority }}</td>
+                    <td>
+                        <VueMultiselect v-model="selectedTags" :options="tags" :multiple="true" :close-on-select="true" placeholder="Select Tags"
+            label="tagName" track-by="_id"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                    </td>
+
+
                     <td class="px-4 py-3 ">
-                        <button type="button" data-modal-target="edit-modal" data-modal-toggle="edit-modal"
+                        <button type="button"
                             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Edit</button>
-                        <!-- <div id="edit-modal" tabindex="-1" aria-hidden="true"
-                                            class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                                            <UpdateOrganization />
-                                        </div> -->
                         <button type="button" v-on:click="deleteContact(contact._id)"
                             class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                     </td>
@@ -158,6 +162,7 @@
             </tbody>
 
         </table>
+        
         <!-- </div> -->
         <!-- <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
                         aria-label="Table navigation">
@@ -222,6 +227,9 @@
 
 <script>
 import { Contacts } from "../api/ContactsCollection"
+import { Tags } from "../api/TagsCollection"
+import VueMultiselect from 'vue-multiselect'
+
 // import AddContact from './AddContact.vue';
 
 export default {
@@ -234,18 +242,16 @@ export default {
             email: "",
             phone: "",
             company: "",
-            priority: ""
+            priority: "",
+            selectedTags: [],
         }
     },
     methods: {
         openModal() {
             this.showModal = true;
-            console.log("open button clicked")
-            console.log("show modal is set to",this.showModal)
         },
         closeModal() {
             this.showModal = false;
-            console.log("close modal clicked.")
         },
         submitContact() {
             const userId = Meteor.userId();
@@ -301,7 +307,8 @@ export default {
     },
     meteor: {
         $subscribe: {
-            contacts: []
+            contacts: [],
+            tags: [],
         },
         showContacts() {
             const userId = Meteor.userId();
@@ -312,8 +319,15 @@ export default {
             } else {
                 return Contacts.find({}).fetch();
             }
-        }
+        },
+
+        tags() {
+            const userId = Meteor.userId();
+            if (userId) {
+                return Tags.find({ createdByUserId: userId }).fetch();
+            }
+        },
     },
-    // components: { AddContact }
-}
+        components: { VueMultiselect }
+    }
 </script>
