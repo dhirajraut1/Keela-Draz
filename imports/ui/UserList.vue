@@ -190,13 +190,15 @@ export default {
             this.showModal = false;
             this.firstName = '';
             this.lastName = '';
-            this.selectedOrganization = '';
             this.selectedRole = '';
         },
-        openEditModal(userData, userId) {
+        openEditModal(data) {
             this.mode = 'edit';
             this.showModal = true;
-            // this.doc = { ...userData };
+            this.doc = { ...data };
+            this.firstName = data.profile.firstName;
+            this.lastName = data.profile.lastName;
+            this.selectedRole = data.profile.role;
         },
         async handleUser() {
             const options = {
@@ -211,8 +213,6 @@ export default {
             }
 
             const userId = Meteor.userId();
-            // const role = Meteor.users().role;
-
             try {
                 if (this.mode === 'add') {
                     console.log(options)
@@ -226,24 +226,23 @@ export default {
                     })
 
                 } else if (this.mode === 'edit') {
-                    console.log(this.firstName, this.lastName, this.selectedRole,this.doc._id)
+                    const updates = {
+                        'profile.firstName': this.firstName,
+                        'profile.lastName': this.lastName,
+                        'profile.role': this.selectedRole,
+                    };
+                    console.log(this.firstName, this.lastName, this.selectedRole, this.doc._id, this.doc)
                     await Meteor.call('updateUser', {
                         userId: this.doc._id,
-                        updates: {
-                            'profile.firstName': this.firstName,
-                            'profile.lastName': this.lastName,
-                            'profile.role': this.selectedRole,
+                        updates: updates
+                    }, (error) => {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            // console.log('User creation successful');
+                            alert('User Updated Successfully');
                         }
-
-                    },
-                        (error) => {
-                            if (error) {
-                                console.log(error);
-                            } else {
-                                // console.log('User creation successful');
-                                alert('User Updated Successfully');
-                            }
-                        });
+                    });
                 }
             } catch (error) {
                 alert(error.message);
@@ -280,7 +279,6 @@ export default {
             organizations: [],
         },
         showOrganizations() {
-            const userId = Meteor.userId();
             const orgId = Meteor.user().profile.organizationId;
             const role = Meteor.user().profile.role;
             console.log(role)
@@ -292,7 +290,6 @@ export default {
         },
         showUsers() {
             const user = Meteor.user();
-            const userId = user._id;
             const orgId = Meteor.user().profile.organizationId;
             const role = user.profile.role;
             if (role === 'keelaAdmin') {

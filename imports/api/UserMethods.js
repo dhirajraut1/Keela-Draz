@@ -15,18 +15,15 @@ Meteor.methods({
     return 'User deleted successfully';
   },
 
-  updateUser(user) {
-    const userDetails = Meteor.user();
+  updateUser(data) {
     Meteor.users.update(
-      { _id: user.userId },
+      { _id: data.userId },
       {
         $set: {
-          'profile.firstName': user.updates['profile.firstName'],
-          'profile.lastName': user.updates['profile.lastName'],
-          'profile.role': user.updates['profile.role'],
-          modifiedBy: userDetails._id
+          'profile.role': data.updates['profile.role'],
+          'profile.firstName': data.updates['profile.firstName'],
+          'profile.lastName': data.updates['profile.lastName'],
         },
-      }
-    )
+      })
   }
 })
