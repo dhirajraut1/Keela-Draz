@@ -27,7 +27,7 @@
                 <div v-if="showModal" class="fixed inset-0 bg-black opacity-50 z-50 w-full ml-0"></div>
                 <div v-if="showModal" id="tagModal" tabindex="-1" aria-hidden="true"
                     class="flex justify-center fixed left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                    <div class="fixed bg-white rounded-lg shadow dark:bg-gray-700">
+                    <div class="fixed mt-16 bg-white rounded-lg shadow dark:bg-gray-700">
                         <button type="button" @click="closeModal"
                             class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">
                             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
@@ -65,37 +65,37 @@
         </div>
 
         <!-- table  -->
-        <div class="">
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-4 py-3">Tag Name</th>
-                        <th scope="col" class="px-4 py-3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody v-if="this.showTags.length > 0">
-                    <tr class="border-b dark:border-gray-700" v-for="tag in showTags" :key="tag._id">
-                        <td class="px-4 py-3">{{ tag.tagName }}</td>
-                        <td class="px-4 py-3 ">
-                            <button type="button" @click="openEditModal(tag)"
-                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Edit</button>
-                            <button type="button" v-on:click="deleteTag(tag._id)"
-                                class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-                <tbody v-else>
-                    <tr class="items-center bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                        <td colspan="3" class="px-4 py-3">
-                            <img class="mx-auto w-1/4" src="void.svg" alt="">
-                            <div class="px-6 py-4 font-semibold text-center">
-                                It's so empty here. Click on Add Tag to create a new one.
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <!-- <div class="w-full">  -->
+        <table class=" table-fixed w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-4 py-3">Tag Name</th>
+                    <th scope="col" class="px-4 py-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody v-if="this.showTags.length > 0">
+                <tr class="border-b dark:border-gray-700" v-for="tag in showTags" :key="tag._id">
+                    <td class="px-4 py-3">{{ tag.tagName }}</td>
+                    <td class="px-4 py-3 ">
+                        <button type="button" @click="openEditModal(tag)"
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Edit</button>
+                        <button type="button" v-on:click="deleteTag(tag._id)"
+                            class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody v-else>
+                <tr class="items-center bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td colspan="3" class="px-4 py-3">
+                        <img class="mx-auto w-1/4" src="void.svg" alt="">
+                        <div class="px-6 py-4 font-semibold text-center">
+                            It's so empty here. Click on Add Tag to create a new one.
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- </div> -->
     </div>
 </template>
 
@@ -107,7 +107,7 @@ const tagData = {
 }
 
 export default {
-    name: "tags",
+    name: 'tags',
     data() {
         return {
             mode: 'add',
@@ -127,7 +127,7 @@ export default {
         openEditModal(tagData) {
             this.mode = 'edit';
             this.showModal = true;
-            this.doc = { ...tagData};
+            this.doc = { ...tagData };
         },
         async handleTag() {
             const userId = Meteor.userId();
@@ -142,42 +142,20 @@ export default {
                         }
                     });
                 } else if (this.mode === 'edit') {
-                    await Meteor.call('updateTag', {
-                        ...this.doc,
-                    }, (error)=> {
+                    await Meteor.call('updateTag', { ...this.doc }, (error) => {
                         if (error) {
                             console.log(error);
                         } else {
-                            // console.log('User creation successful');
                             alert('Tag Updated Successfully');
                         }
-                    } );
+                    });
                 }
             } catch (error) {
                 alert(error.message);
             }
             this.closeModal();
-
         },
 
-        //     const userId = Meteor.userId();
-        //     const tag = {
-        //         tagName: this.name,
-        //         createdByUserId: userId
-        //     };
-        //     Meteor.call("insertTag", tag, (error, result) => {
-        //         if (error) {
-        //             console.log(error);
-        //         }
-        //         else {
-        //             console.log(tag)
-        //             console.log("Tag added successfully");
-        //             this.name = "";
-        //         }
-        //         this.closeModal();
-
-        //     });
-        // },
         deleteTag(tagId) {
             console.log(tagId)
             Meteor.call('deleteTag', tagId, function (error, result) {
@@ -199,7 +177,7 @@ export default {
             const userId = Meteor.userId();
             const orgId = Meteor.user().profile.organizationId;
             const adminId = 'BXBvNPQwnnq2PFi64';
-            
+
             if (userId !== adminId) {
                 return Tags.find({ organizationId: orgId }).fetch();
             } else {
@@ -207,6 +185,5 @@ export default {
             }
         },
     },
-    // components: { AddTag }
 }
 </script>

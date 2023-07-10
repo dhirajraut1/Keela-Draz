@@ -84,7 +84,7 @@
                                 <p class="error text-red-600 dark:text-red-500" v-if="passwordError">{{ passwordError }}</p>
                             </div>
                             <button
-                                class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm block w-full px-5 py-2.5 text-center dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800">Create
+                                class="w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800">Create
                                 an account</button>
                             <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                                 Already have an account? <router-link to="/login"

@@ -16,16 +16,17 @@ Meteor.methods({
   },
 
   updateUser(user) {
-    console.log("From method:", user)
-    if (!Accounts.findUserByEmail(user.email)) {
-      Meteor.users.update(user._id), {
+    const userDetails = Meteor.user();
+    Meteor.users.update(
+      { _id: user.userId },
+      {
         $set: {
-          ...user,
+          'profile.firstName': user.updates['profile.firstName'],
+          'profile.lastName': user.updates['profile.lastName'],
+          'profile.role': user.updates['profile.role'],
+          modifiedBy: userDetails._id
         },
       }
-    } else {
-      console.log('Error has occured')
-      throw new Meteor.Error('Email already exists');
-    }
-},
-});
+    )
+  }
+})

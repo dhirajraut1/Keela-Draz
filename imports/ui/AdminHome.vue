@@ -1,59 +1,5 @@
-<script>
-import ContactList from './ContactList.vue'
-import TagList from './TagList.vue'
-import OrganizationList from './OrganizationList.vue'
-import UserList from './UserList.vue'
-
-export default {
-    name: "adminHome",
-    data() {
-        return {
-            tab: 'OrganizationList'
-        };
-    },
-    methods: {
-        logout() {
-            Meteor.logout();
-            window.location.reload();
-            this.$router.push({ name: "login" });
-        },
-        // updateOrganization(organizationId) {
-        //     Meteor.call('updateOrganization', organizationId, this.name, this.email, this.phone, (error, result) => {
-        //         if (error) {
-        //             console.log(error);
-        //         } else {
-        //             console.log(result);
-        //         }
-        //     });
-        // },
-    },
-    // meteor: {
-    //     $subscribe: {
-    //         organizations: []
-    //     },
-    //     showOrganizations() {
-    //         const userId = Meteor.userId();
-    //         if (userId) {
-    //             return Organizations.find({}).fetch();
-    //         }
-    //     },
-    //     showSelectedOrganizations(id) {
-    //         const userId = Meteor.userId();
-    //         if (id) {
-    //             return Organizations.find({ "_id": id }).fetch();
-    //         }
-    //     }
-    // },
-    components: { ContactList, TagList, OrganizationList, UserList },
-    // mounted () {
-    //     this.showOrganizations()
-    // }
-
-}
-</script>
-
 <template>
-    <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+    <nav class="fixed top-0 z-50 w-full bg-blue-200 border-b border-gray-200 dark:bg-blue-800 dark:border-gray-700">
         <div class="px-3 py-3 lg:px-5 lg:pl-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center justify-start">
@@ -61,9 +7,8 @@ export default {
                         <img src="https://www.keela.co/wp-content/uploads/logo.png" class="h-8 mr-3" alt="keela Logo" />
                     </a>
                 </div>
-                <div class="flex items-center justify-end"> Hola!&nbsp; <b> Admin</b>, &nbsp;
-                    <button
-                        class="w-full text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800"
+                <div class="flex items-center justify-end"> Hola!&nbsp; <b> Admin&nbsp;</b><button
+                        class="w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                         v-on:click="logout"> Logout</button>
                 </div>
             </div>
@@ -139,3 +84,29 @@ export default {
         </section>
     </div>
 </template>
+
+<script>
+import ContactList from './ContactList.vue'
+import TagList from './TagList.vue'
+import OrganizationList from './OrganizationList.vue'
+import UserList from './UserList.vue'
+
+export default {
+    name: "adminHome",
+    data() {
+        return {
+            tab: 'OrganizationList'
+        };
+    },
+    methods: {
+        logout() {
+            Meteor.logout();
+            window.location.reload();
+            this.$router.push({ name: "login" });
+        },
+    },
+    components: { ContactList, TagList, OrganizationList, UserList },
+}
+</script>
+
+

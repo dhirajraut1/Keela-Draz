@@ -1,6 +1,7 @@
 <template>
     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
         <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+            <!-- search bar  -->
             <div class="w-full md:w-1/3">
                 <form class="flex items-center">
                     <label for="simple-search" class="sr-only">Search</label>
@@ -19,16 +20,15 @@
                     </div>
                 </form>
             </div>
-            <!-- <p>Users</p> -->
             <div class="w-full md:w-auto flex flex-col md:flex-row items-center">
                 <button type="button" @click="openModal"
                     class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
                     Add User
                 </button>
-                <div v-if="showModal" class="fixed inset-0 bg-black opacity-50 z-50 w-full ml-0 "></div>
+                <div v-if="showModal" class="fixed inset-0 bg-black opacity-50 z-50 w-full ml-0"></div>
                 <div v-if="showModal" id="userModal" tabindex="-1" aria-hidden="true"
                     class="flex justify-center fixed left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                    <div class="fixed bg-white rounded-lg shadow dark:bg-gray-700">
+                    <div class="fixed mt-16 bg-white rounded-lg shadow dark:bg-gray-700">
                         <button type="button" @click="closeModal"
                             class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">
                             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
@@ -85,13 +85,12 @@
                                     <select type="text" name="role" id="role" v-model="selectedRole"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                                         required>
-                                        <option v-for="role in roles" v-bind:key="role" v-bind:value="role">
-                                            {{ role }}
-                                        </option>
+                                        <option value='admin'>Admin</option>
+                                        <option value="coordinator">Coordinator</option>
+
                                     </select>
                                 </div>
-
-                                <div>
+                                <div v-if="mode !== 'edit'">
                                     <label for="organization"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Organization</label>
                                     <select v-model="selectedOrganization"
@@ -126,7 +125,7 @@
                         <th scope="col" class="px-4 py-3">Actions</th>
                     </tr>
                 </thead>
-                <tbody v-if="1 > 0">
+                <tbody v-if="this.showUsers.length > 0">
                     <tr class="border-b dark:border-gray-700" v-for="user in showUsers" :key="user._id">
                         <td class="px-4 py-3">{{ user.profile.firstName }} {{ user.profile.lastName }}</td>
                         <td class="px-4 py-3">{{ user.emails[0].address }}</td>
@@ -134,9 +133,9 @@
                         <td class="px-4 py-3">{{ user.profile.role }}</td>
 
                         <td class="px-4 py-3 ">
-                            <!-- <button type="button" v-on:click="openEditModal(user)"
-                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Edit</button> -->
-                            <button type="button" v-on:click="deleteUser(user._id)"
+                            <button type="button" v-on:click="openEditModal(user)"
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Edit</button>
+                            <button v-if="currentUser.id !== user._id" type="button" v-on:click="deleteUser(user._id)"
                                 class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                         </td>
                     </tr>
@@ -146,21 +145,20 @@
                         <td colspan="3" class="px-4 py-3">
                             <img class="mx-auto w-1/4" src="void.svg" alt="">
                             <div class="px-6 py-4 font-semibold text-center">
-                                It's so empty here. Click on Add Tag to create a new one.
+                                It's so empty here. Click on Add Users to create a new one.
                             </div>
                         </td>
 
                     </tr>
                 </tbody>
             </table>
+            <!-- <p v-if="currentUser.role=='admin'">User role: {{ currentUser.role }}</p> -->
         </div>
     </div>
 </template>
 
 <script>
 import { Organizations } from "../api/OrganizationsCollection"
-
-import { roles } from '../api/roles';
 
 const userData = {
     email: '',
@@ -177,14 +175,16 @@ export default {
             firstName: '',
             lastName: '',
             selectedOrganization: '',
-            roles: roles,
             selectedRole: '',
         };
     },
+    created() {
+        this.getUser();
+    },
     methods: {
         openModal() {
-            this.mode = 'add',
-                this.showModal = true;
+            this.mode = 'add';
+            this.showModal = true;
         },
         closeModal() {
             this.showModal = false;
@@ -193,10 +193,10 @@ export default {
             this.selectedOrganization = '';
             this.selectedRole = '';
         },
-        openEditModal(userData) {
+        openEditModal(userData, userId) {
             this.mode = 'edit';
             this.showModal = true;
-            this.doc = { ...userData };
+            // this.doc = { ...userData };
         },
         async handleUser() {
             const options = {
@@ -207,13 +207,15 @@ export default {
                     role: this.selectedRole,
                     organizationName: this.selectedOrganization.organizationName,
                     organizationId: this.selectedOrganization._id,
-                },
+                }
             }
 
             const userId = Meteor.userId();
+            // const role = Meteor.users().role;
 
             try {
                 if (this.mode === 'add') {
+                    console.log(options)
                     await Meteor.call('insertUser', options, (error) => {
                         if (error) {
                             console.log(error.error);
@@ -222,17 +224,17 @@ export default {
                             alert('User Created Successfully');
                         }
                     })
+
                 } else if (this.mode === 'edit') {
-                    console.log('editing...')
+                    console.log(this.firstName, this.lastName, this.selectedRole,this.doc._id)
                     await Meteor.call('updateUser', {
-                        profile: {
-                            firstName: this.firstName,
-                            lastName: this.lastName,
-                            role: this.selectedRole,
-                            organizationName: this.selectedOrganization.organizationName,
-                            organizationId: this.selectedOrganization._id,
-                        },
-                        updatedBy: userId,
+                        userId: this.doc._id,
+                        updates: {
+                            'profile.firstName': this.firstName,
+                            'profile.lastName': this.lastName,
+                            'profile.role': this.selectedRole,
+                        }
+
                     },
                         (error) => {
                             if (error) {
@@ -259,7 +261,19 @@ export default {
             });
             alert("User deleted Successfully.")
         },
+        getUser() {
+            const currentUser = Meteor.user();
+            if (currentUser) {
+                this.currentUser = {
+                    org: currentUser.profile.organizationName,
+                    role: currentUser.profile.role,
+                    id: currentUser._id,
+                    orgId: currentUser.profile.organizationId
+                };
+            }
+        },
     },
+
     meteor: {
         $subscribe: {
             users: [],
@@ -267,16 +281,24 @@ export default {
         },
         showOrganizations() {
             const userId = Meteor.userId();
-            const adminId = 'BXBvNPQwnnq2PFi64';
-            if (userId) {
+            const orgId = Meteor.user().profile.organizationId;
+            const role = Meteor.user().profile.role;
+            console.log(role)
+            if (role === 'keelaAdmin') {
                 return Organizations.find({}).fetch();
+            } else {
+                return Organizations.find({ _id: orgId }).fetch();
             }
         },
         showUsers() {
-            const userId = Meteor.userId();
-            const adminId = 'BXBvNPQwnnq2PFi64';
-            if (userId) {
+            const user = Meteor.user();
+            const userId = user._id;
+            const orgId = Meteor.user().profile.organizationId;
+            const role = user.profile.role;
+            if (role === 'keelaAdmin') {
                 return Meteor.users.find({});
+            } else {
+                return Meteor.users.find({ 'profile.organizationId': orgId }).fetch();
             }
         },
     },

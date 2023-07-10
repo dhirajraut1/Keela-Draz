@@ -266,8 +266,6 @@ export default {
             }
         }
     },
-    // components: { AddOrganization }
-
 }
 
 </script>
