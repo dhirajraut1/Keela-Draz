@@ -90,13 +90,38 @@
                                     <div>
                                         <label for="tags"
                                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tag</label>
-                                        <select id="tags" v-model="doc.tag"
+                                        <select id="tags" v-model="selectedTags" multiple
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                            <option v-for="tag in showTags" v-bind:value="tag" v-bind:key="tag._id">
+                                            <option v-for="tag in showTags" v-bind:value="tag.tagName" v-bind:key="tag._id">
                                                 {{ tag.tagName }}
                                             </option>
                                         </select>
                                     </div>
+                                    <!-- <div>
+                                        <label for="tags"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tag</label>
+
+                                        <select id="tags" v-model="selectedTags" multiple
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                            <option v-for="tag in showTags" v-bind:value="tag.tagName" v-bind:key="tag._id">
+                                                {{ tag.tagName }}
+                                            </option>
+                                        </select>
+                                        <div class="flex flex-wrap gap-1">
+                                            <div v-for="tag in selectedTags" v-bind:key="tag._id"
+                                                class="bg-gray-200 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:bg-gray-800 dark:text-gray-300">
+                                                {{ tag }}
+                                                <button v-on:click="removeTag(tag)"
+                                                    class="ml-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div> -->
                                     <button
                                         class="w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                         {{ mode === 'add' ? 'Save' : 'Update' }}
@@ -117,7 +142,7 @@
                     <th scope="col" class="px-4 py-3">Phone</th>
                     <th scope="col" class="px-4 py-3">Company</th>
                     <th scope="col" class="px-4 py-3">Tags</th>
-                    <th v-if="currentUser.role !== 'coordinator'" scope="col" class="px-4 py-3">Actions</th>
+                    <th v-if="currentUser.role === 'admin'" scope="col" class="px-4 py-3">Actions</th>
                 </tr>
             </thead>
             <tbody v-if="this.showContacts.length > 0">
@@ -127,8 +152,12 @@
                     <td class="px-4 py-3">{{ contact.email }}</td>
                     <td class="px-4 py-3">{{ contact.phone }}</td>
                     <td class="px-4 py-3">{{ contact.company }}</td>
-                    <td class="px-4 py-3">{{ contact.tag.tagName }}</td>
-                    <td v-if="currentUser.role !== 'coordinator'" class="px-4 py-3 ">
+                    <td class="px-4 py-3">
+                        <div v-for="tag in contact.tags">
+                            {{ tag }}
+                        </div>
+                    </td>
+                    <td v-if="currentUser.role === 'admin'" class="px-4 py-3 ">
                         <button type="button" @click="openEditModal(contact)"
                             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                             Edit</button>
@@ -185,19 +214,25 @@ export default {
         closeModal() {
             this.showModal = false;
             this.selectedTags = [],
-            this.doc = { ...contactData };
+                this.doc = '';
         },
         openEditModal(contactData) {
             this.mode = 'edit';
             this.showModal = true;
             this.doc = { ...contactData };
         },
+        removeTag(tagName) {
+            const index = this.selectedTags.indexOf(tagName);
+            if (index !== -1) {
+                this.selectedTags.splice(index, 1);
+            }
+        },
         async handleContact() {
             const userId = Meteor.userId();
-
             try {
                 if (this.mode === 'add') {
-                    await Meteor.call('insertContact', { ...this.doc }, (error) => {
+                    console.log({ ...this.doc, }, this.selectedTags)
+                    await Meteor.call('insertContact', { ...this.doc, tags: this.selectedTags }, (error) => {
                         if (error) {
                             console.log(error);
                         } else {
@@ -206,7 +241,7 @@ export default {
                     });
                 } else if (this.mode === 'edit') {
                     await Meteor.call('updateContact', {
-                        ...this.doc,
+                        ...this.doc, tags: this.selectedTags
                     }, (error) => {
                         if (error) {
                             console.log(error);
@@ -231,7 +266,7 @@ export default {
                 }
             });
         },
-           getUser() {
+        getUser() {
             const currentUser = Meteor.user();
             if (currentUser) {
                 this.currentUser = {

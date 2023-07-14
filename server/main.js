@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor'
 import { Accounts } from 'meteor/accounts-base'
-import { Roles } from 'meteor/alanning:roles'
 
 import { Contacts } from '../imports/api/ContactsCollection'
 import ContactMethods from '../imports/api/ContactMethods'
@@ -14,22 +13,35 @@ import OrganizationMethods from '../imports/api/OrganizationMethods'
 import UserMethods from '../imports/api/UserMethods'
 
 
-Meteor.startup( () => {
+Meteor.startup(() => {
+  if (!Accounts.findUserByEmail('admin@keela.com')) {
+    Accounts.createUser({
+      email: 'admin@keeela.com',
+      password: 'admin',
+      profile: {
+        firstName: 'Keela',
+        lastName: 'Admin',
+            role: 'keelaAdmin',
+            organizationId: '009',
+            organizationname: 'KEELA'
+      },
+    });
+  }
 
 })
 
-Meteor.publish('contacts', function() {
+Meteor.publish('contacts', function () {
   return Contacts.find();
 });
 
-Meteor.publish('organizations', function() {
+Meteor.publish('organizations', function () {
   return Organizations.find();
 });
 
-Meteor.publish('tags', function() {
+Meteor.publish('tags', function () {
   return Tags.find();
 });
 
-Meteor.publish('users', function (){ 
+Meteor.publish('users', function () {
   return Meteor.users.find({});
 });

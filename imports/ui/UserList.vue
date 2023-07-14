@@ -127,7 +127,7 @@
                 </thead>
                 <tbody v-if="this.showUsers.length > 0">
                     <tr class="border-b dark:border-gray-700" v-for="user in showUsers" :key="user._id">
-                        <td class="px-4 py-3">{{ user.profile.firstName }} {{ user.profile.lastName }}</td>
+                        <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.profile.firstName }} {{ user.profile.lastName }}</td>
                         <td class="px-4 py-3">{{ user.emails[0].address }}</td>
                         <td class="px-4 py-3">{{ user.profile.organizationName }}</td>
                         <td class="px-4 py-3">{{ user.profile.role }}</td>
