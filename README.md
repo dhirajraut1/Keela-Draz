@@ -8,6 +8,12 @@ This is a simple example of how to use Vue3 with Meteor.
 2. Run `meteor npm install`
 3. Run `meteor`
 4. Open `http://localhost:3000` in your browser
+5. Signup a user
+7. If keelaAdmin is not created add role under profile from MongoDB to view the organisation and users
+
+Admin cred
+email: admin@keela.com
+Pass : admin
 
 ## Libraries used
 
