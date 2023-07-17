@@ -9,8 +9,9 @@ This is a simple CRM based on Keela
 3. Run `meteor`
 4. Open `http://localhost:3000` in your browser
 
-** Admin cred **
+**Admin Cred**
 email: admin@keela.com
+
 Pass : admin
 
 ## Libraries used
