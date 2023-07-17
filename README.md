@@ -10,6 +10,7 @@ This is a simple CRM based on Keela
 4. Open `http://localhost:3000` in your browser
 
 **Admin Cred**
+
 email: admin@keela.com
 
 Pass : admin
