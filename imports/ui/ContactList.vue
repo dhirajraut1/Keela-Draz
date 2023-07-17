@@ -310,6 +310,5 @@ export default {
             }
         },
     },
-    components: { VueMultiselect }
 }
 </script>
