@@ -48,23 +48,23 @@ export const router = createRouter({
       },
       meta: {
         requiresAuth: true,
-        roles: ['admin']
       }
     },
   ],
 })
 router.beforeEach((to, from, next) => {
-  const adminId = 'BXBvNPQwnnq2PFi64';
+  // const adminId = 'BXBvNPQwnnq2PFi64';
+  // const role = Meteor.user().profile.role;
   const userId = Meteor.userId();
-  if (to.meta.requiresAuth &&!userId) {
+  if (to.meta.requiresAuth && !userId) {
     next('/login');
   } else if (to.path === '/login' && userId) {
     next('/');
   } else if (to.path === '/signup' && userId) {
     next('/');
-  } else if (to.path === '/' && userId && userId === adminId) {
+  } else if (to.path === '/' && userId && Meteor.user().profile.role === 'keelaAdmin') {
     next('/admin');
-  } else if (to.path === '/admin' && userId && userId !== adminId) {
+  } else if (to.path === '/admin' && userId && Meteor.user().profile.role !== 'keelaAdmin') {
     next('/unauthorized');
   } else {
     next();

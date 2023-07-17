@@ -16,7 +16,7 @@ import UserMethods from '../imports/api/UserMethods'
 Meteor.startup(() => {
   if (!Accounts.findUserByEmail('admin@keela.com')) {
     Accounts.createUser({
-      email: 'admin@keeela.com',
+      email: 'admin@keela.com',
       password: 'admin',
       profile: {
         firstName: 'Keela',
