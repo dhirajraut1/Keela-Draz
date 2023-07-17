@@ -116,9 +116,9 @@ export default {
             }
         },
         logout() {
-            Meteor.logout();
-            window.location.reload();
-            this.$router.push({ name: "login" });
+            Meteor.logout(()=>{
+                this.$router.push({ name: "login" });
+            });
 
         },
     },
