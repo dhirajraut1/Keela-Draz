@@ -11,9 +11,7 @@ This is a simple CRM based on Keela
 
 **Admin Cred**
 
-email: admin@keela.com
 
-Pass : admin
 
 ## Libraries used
 
